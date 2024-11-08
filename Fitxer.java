@@ -1,0 +1,234 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Locale;
+
+public class Fitxer {
+    private static String a = "";
+    public static void createAlbaran(ArrayList<Encarrec> encarrecs) throws IOException{    //Method to create a delivery note
+        String fileName = "C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06_UF1_A02\\" + "encarrecs_" + System.currentTimeMillis() + ".txt";//select your path
+        File file = new File(fileName);
+        try (BufferedWriter line = new BufferedWriter(new FileWriter(file))) {
+            for (Encarrec encarrec : encarrecs) {
+                line.write("Encarrec:  " + encarrec.id + "\n" +
+            "Client's name:  " + encarrec.name + "\n" +
+            "Client's phone: " + encarrec.phone + "\n" +
+            "Order's date:   " + encarrec.data + "\n" +
+            "Total price:   " + encarrec.priceTotal + "\n" +                    // Write the client's information  
+            "\nQuantity       Units     Article     Price\n"  +
+            "============= ========= ========= =========");
+                for (Article art : encarrec.articles) {                         // Read all the articles of the client
+                    a = art.toString(); 
+                    line.write(a);                                              // Write the list of articles                                                
+                }
+                line.newLine();
+                line.newLine();
+            }
+            line.close();
+            System.out.println("\nDocument created successfully");          // The document is created
+        } catch (FileNotFoundException e) {
+            System.out.println("\nFAIL, documento no created");             // The document isn't created
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createCSV(ArrayList<Encarrec> encarrecs) throws IOException{                                                                 //Method to create a file in CSV
+        String fileName = "C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06_UF1_A02\\" + "encarrecs" + System.currentTimeMillis() + ".csv";          //select your path
+        File file = new File(fileName);
+        try (BufferedWriter line = new BufferedWriter(new FileWriter(file))) {
+            for (Encarrec encarrec : encarrecs) {
+                line.write(encarrec.id + ";" + encarrec.name + ";" + encarrec.phone + ";" + encarrec.data + ";" + encarrec.priceTotal + ";");       // Write the client's information
+                for (Article art : encarrec.articles) {                         // Read all the articles of the client
+                    line.write(Article.toCSV(art) + ";");                   // Accumulate 
+                }
+                line.newLine();                                                 // Write the line                               
+            }                                                 
+            line.close();                                                     // Close the line
+            System.out.println("\nDocument created successfully");          // The document is created
+        } catch (FileNotFoundException e) {
+            System.out.println("\nFAIL, documento no created");             // The document isn't created
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createBinari(ArrayList<Encarrec> encarrecs) throws IOException{     //Method to create a file in binary
+        String fileName = "C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06_UF1_A02\\" + "encarrecs" + System.currentTimeMillis() + ".dat";//select your path
+        File file = new File(fileName);
+        try (FileOutputStream fileStr1 = new FileOutputStream(file)) {
+            DataOutputStream line = new DataOutputStream(fileStr1);
+            for (Encarrec encarrec : encarrecs) {
+                line.writeInt(encarrec.id);                                  // Write the name of the order (int)
+                line.writeUTF(encarrec.name);                                // Write the name of the client (String)
+                line.writeUTF(encarrec.phone);                               // Write the phone of the client (String)
+                line.writeUTF(encarrec.data);                                // Write the date (String)
+                line.writeFloat(encarrec.priceTotal);                        // Write the pricetotal (float)
+                for (Article art : encarrec.articles) {
+                    line.writeFloat(art.getQuantity());                         // Write the quantity (Float)
+                    line.writeUTF(art.getUnit());                               // Write the units (String)
+                    line.writeUTF(art.getName());                               // Write the name of the article (String)
+                    line.writeFloat(art.getPrice());                            // Write the price of the article (float)             
+                }
+                line.writeFloat(-1.0f);
+            }
+            line.close();
+            fileStr1.close();
+            System.out.println("\nDocument created successfully");      // The document is created
+        } catch (FileNotFoundException e) {
+            System.out.println("\nFAIL, documento no created");         // The document isn't created
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void readBinari() {                                           
+        System.out.print("\nIndicate the path: ");                           // Ask for the path
+        String filePath = Entrada.readLine();
+        try (FileInputStream f1 = new FileInputStream(filePath)) {
+            DataInputStream f = new DataInputStream(f1);
+            while (f.available() > 0) {  // Mientras haya datos en el archivo
+
+                // Leer la información básica del encargo
+                System.out.println("\nEncarrec id: " + f.readInt());
+                System.out.println("Client's name: " + f.readUTF());
+                System.out.println("Client's phone: " + f.readUTF());
+                System.out.println("Order's date: " + f.readUTF());
+                System.out.println("Price total: " + f.readFloat());
+    
+                System.out.println("\nQuantity       Units     Article   Price\n" + 
+                                   "===========   =========  ========= ======== ");
+    
+                // Leer cada artículo hasta encontrar la marca de fin de artículos
+                while (f.available() > 0) {  
+                    float quantity = f.readFloat();
+    
+                    // Verificar si quantity tiene el valor especial de fin de artículos (ej., -1)
+                    if (quantity == -1.0f) {
+                        break;  // Salir del bucle de artículos
+                    }
+    
+                    // Leer el resto de los datos del artículo
+                    String units = f.readUTF();
+                    String article = f.readUTF();
+                    float price = f.readFloat();
+    
+                    // Mostrar la información del artículo
+                    System.out.println(String.format(Locale.US, "%-13.1f %-10s %-10s %-10.2f", quantity, units, article, price));
+                }
+            }
+            f.close();
+            f1.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("\nFAIL, path not correct");         // The document is not found
+            
+        } 
+        catch (EOFException e) {
+            System.out.println("\nFAIL, incorrect document");       // Not correct extension
+        }
+        catch (IOException e) {
+                e.printStackTrace();
+        }
+    }
+
+    public static void readCSV () {
+        // Ask for the path of the document you want to read
+        System.out.print("\nIndicate the path: ");                          // Ask for the path
+        String filePath = Entrada.readLine();
+        if (filePath.endsWith(".csv")) {                               // Check the suffix
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+                String line;
+
+                // Read the lines until it finds null 
+                while ((line = br.readLine()) != null) {
+
+                    // Separate the values by ";"
+                    String[] values = line.split(";");
+                    String id = values[0];
+                    String clientName = values[1];
+                    String clientPhone = values[2];
+                    String orderDate = values[3];
+                    String priceTotal = values[4];
+                    System.out.println("\nEncarrec id:  " + id);
+                    System.out.println("\nClient's name:  " + clientName);      // Print name of the client (String)
+                    System.out.println("Client's phone: " + clientPhone);       // Print phone of the client (String)
+                    System.out.println("Order's date:   " + orderDate);         // Print date (String)
+                    System.out.println("Price total:   " + priceTotal + "\n");
+                    System.out.println(String.format("%-12s %-10s %-12s %-12s", "Quantity", "Units", "Article", "Price"));
+                    System.out.println(String.format("=========== ========== =========== ==========="));
+                    for (int i = 5; i < values.length; i += 4) {
+                        String quantity = values[i+1];
+                        String units = values[i + 2];
+                        String article = values[i];
+                        String price = values[i + 3];
+                        System.out.println(String.format(Locale.US, "%-12s %-10s %-12s %-12s", quantity, units, article, price));    // Print the list of article (Flaot, String, String)
+                    }
+                }
+                br.close();
+            } catch (FileNotFoundException e) {
+                System.out.println("\nFAIL, path not correct");         // The document is not found
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("\nFAIL, incorrect document");           // Not correct extension
+        }
+    }
+
+    public static void selectDocument(ArrayList<Encarrec> encarrecs) throws IOException{      // Method to create a document
+        while (true) {
+            System.out.println("\nWhich document do you want?:\n" + 
+                            "a) Albaran  [a] \n" + 
+                            "b) Binary   [b]\n" +
+                            "c) CSV \t    [c] \n");
+            System.out.print("----> ");
+            String select = Entrada.readLine();
+            if (select.equals("a")) {                           // to create a .txt file
+                createAlbaran(encarrecs);
+                
+                break;
+            }
+            if (select.equals("b")) {                           // to create a binary file
+                Fitxer.createBinari(encarrecs);
+                
+                break;
+            }
+            if (select.equals("c")) {                           // to create a .csv file
+                Fitxer.createCSV(encarrecs);
+
+                break;
+            }
+            if(!select.equals("a") && !select.equals("b") && !select.equals("c")) {
+                System.out.println("\n=======================");
+                System.out.println("Invalid option\nChoose a correct option");
+                System.out.println("======================="); 
+            }
+        }
+    }
+
+    public static void selectReadDocument() throws IOException {            // Method to choose which document you want to read
+        System.out.println("\nWhich document do you want read?:\n" +  
+                                    "a) Binary\t[b]\n" +
+                                    "b) CSV \t\t[c] \n" +
+                                    "c) Deserializar [d] \n" +
+                                    "d) Exit\t\t[x]");
+        System.out.print("\n----> ");
+        String ans = Entrada.readLine();
+                
+        if (ans.equals("b")) {                                      // [b] to read a binary file
+            Fitxer.readBinari();
+        }
+        if (ans.equals("c")) {                                      // [c] to read a .CSV file
+            Fitxer.readCSV();
+        }
+        if (ans.equals("d")) {                                      // [d] deserailizar
+            Encarrec.Deserializador();
+        }
+        if (ans.equals("x")) {                                      // [x] to exit
+        }
+        if (!ans.equals("b") && !ans.equals("c") && !ans.equals("x") && !ans.equals("d")) {
+            System.out.println("\n=======================");
+            System.out.println("Invalid option\nChoose a correct option");
+            System.out.println("=======================");
+        }
+    }
+}
