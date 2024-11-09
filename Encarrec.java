@@ -59,8 +59,9 @@ public class Encarrec implements Serializable {
 
     public static void Serializador() {
 		
-	try (ObjectOutputStream serializador = new ObjectOutputStream(new FileOutputStream("C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06_UF1_A02\\" + "Serial_" + System.currentTimeMillis() + ".dat"))) {
+	try (ObjectOutputStream serializador = new ObjectOutputStream(new FileOutputStream("C:\\Users\\migue\\Desktop\\DAM2\\M06\\M06-UF1-A03\\" + "Serial_" + System.currentTimeMillis() + ".dat"))) {
         serializador.writeObject(encarrecs);
+        System.out.println("\n\"Serializado\" file generated");
     } catch (IOException ioe) { 
         System.out.print(ioe.getMessage());
     }
@@ -86,56 +87,61 @@ public class Encarrec implements Serializable {
     }
 
     public static void fileRandom() throws IOException {
-        RandomAccessFile raw1 = new RandomAccessFile("Random_" + System.currentTimeMillis() + ".dat", "rw");    // Create a new file with a name based on the current time
-        for (Encarrec encarrec : encarrecs) {
-            int longRecord = 0;
-            raw1.writeInt(encarrec.id);                                     // Write the order ID (int -> 4 bytes)
-            longRecord += Integer.BYTES;
-    
-            StringBuffer nameBuffer = new StringBuffer(encarrec.name);      // Enter the client name (Fixed length string -> 20 chars = 40 bytes)
-            nameBuffer.setLength(20);                             
-            raw1.writeChars(nameBuffer.toString());
-            longRecord += nameBuffer.length();                              // 2 bytes by char
-    
-            StringBuffer phoneBuffer = new StringBuffer(encarrec.phone);    // Write the customer's phone number (Fixed length string -> 20 chars = 40 bytes)
-            phoneBuffer.setLength(20);
-            raw1.writeChars(phoneBuffer.toString());
-            longRecord += phoneBuffer.length();
-    
-            StringBuffer dateBuffer = new StringBuffer(encarrec.data);      // Write the date of the order (Fixed length string -> 20 chars = 40 bytes)
-            dateBuffer.setLength(20);
-            raw1.writeChars(dateBuffer.toString());
-            longRecord += dateBuffer.length();
-
-            raw1.writeFloat(encarrec.priceTotal);                           // Write the quantity of the item (float -> 4 bytes)
-                longRecord += Float.BYTES;
-    
-            raw1.writeInt(encarrec.articles.size());                        // Write the number of items (int -> 4 bytes)
-            longRecord += Integer.BYTES;
-    
-            for (Article art : encarrec.articles) {                         // Writing the articles
-                
-                raw1.writeFloat(art.getQuantity());                         // Write the quantity of the item (float -> 4 bytes)
-                longRecord += Float.BYTES;
-    
-                StringBuffer unitBuffer = new StringBuffer(art.getUnit());  // Write the item unit (Fixed length String -> 5 chars = 10 bytes)
-                unitBuffer.setLength(20);
-                raw1.writeChars(unitBuffer.toString());
-                longRecord += unitBuffer.length();
-    
-                
-                StringBuffer articleNameBuffer = new StringBuffer(art.getName());   // Write the name of the article (Fixed length string -> 20 chars = 40 bytes)
-                articleNameBuffer.setLength(20);
-                raw1.writeChars(articleNameBuffer.toString());
-                longRecord += articleNameBuffer.length();
-    
-                raw1.writeFloat(art.getPrice());                            // Write the price of the item (float -> 4 bytes)
-                longRecord += Float.BYTES;
-            }
-            raw1.writeInt(longRecord);                                      // Write record length (int -> 4 bytes)
-        }
         
-        raw1.close();                                                       // Close
+        try (RandomAccessFile raw1 = new RandomAccessFile("Random_" + System.currentTimeMillis() + ".dat", "rw");) {
+            // Create a new file with a name based on the current time
+            for (Encarrec encarrec : encarrecs) {
+                int longRecord = 0;
+                raw1.writeInt(encarrec.id);                                     // Write the order ID (int -> 4 bytes)
+                longRecord += Integer.BYTES;
+        
+                StringBuffer nameBuffer = new StringBuffer(encarrec.name);      // Enter the client name (Fixed length string -> 20 chars = 40 bytes)
+                nameBuffer.setLength(20);                             
+                raw1.writeChars(nameBuffer.toString());
+                longRecord += nameBuffer.length();                              // 2 bytes by char
+        
+                StringBuffer phoneBuffer = new StringBuffer(encarrec.phone);    // Write the customer's phone number (Fixed length string -> 20 chars = 40 bytes)
+                phoneBuffer.setLength(20);
+                raw1.writeChars(phoneBuffer.toString());
+                longRecord += phoneBuffer.length();
+        
+                StringBuffer dateBuffer = new StringBuffer(encarrec.data);      // Write the date of the order (Fixed length string -> 20 chars = 40 bytes)
+                dateBuffer.setLength(20);
+                raw1.writeChars(dateBuffer.toString());
+                longRecord += dateBuffer.length();
+
+                raw1.writeFloat(encarrec.priceTotal);                           // Write the quantity of the item (float -> 4 bytes)
+                    longRecord += Float.BYTES;
+        
+                raw1.writeInt(encarrec.articles.size());                        // Write the number of items (int -> 4 bytes)
+                longRecord += Integer.BYTES;
+        
+                for (Article art : encarrec.articles) {                         // Writing the articles
+                    
+                    raw1.writeFloat(art.getQuantity());                         // Write the quantity of the item (float -> 4 bytes)
+                    longRecord += Float.BYTES;
+        
+                    StringBuffer unitBuffer = new StringBuffer(art.getUnit());  // Write the item unit (Fixed length String -> 5 chars = 10 bytes)
+                    unitBuffer.setLength(20);
+                    raw1.writeChars(unitBuffer.toString());
+                    longRecord += unitBuffer.length();
+        
+                    
+                    StringBuffer articleNameBuffer = new StringBuffer(art.getName());   // Write the name of the article (Fixed length string -> 20 chars = 40 bytes)
+                    articleNameBuffer.setLength(20);
+                    raw1.writeChars(articleNameBuffer.toString());
+                    longRecord += articleNameBuffer.length();
+        
+                    raw1.writeFloat(art.getPrice());                            // Write the price of the item (float -> 4 bytes)
+                    longRecord += Float.BYTES;
+                }
+                raw1.writeInt(longRecord);
+            }
+            raw1.close();
+            System.out.println("\"Random file generated\"");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void modifyRandom() {

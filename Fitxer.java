@@ -1,11 +1,16 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+import javax.xml.transform.*; 
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
 
 public class Fitxer {
     private static String a = "";
     public static void createAlbaran(ArrayList<Encarrec> encarrecs) throws IOException{    //Method to create a delivery note
-        String fileName = "C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06_UF1_A02\\" + "encarrecs_" + System.currentTimeMillis() + ".txt";//select your path
+        String fileName = "C:\\Users\\migue\\Desktop\\DAM2\\M06\\M06-UF1-A03\\" + "encarrecs_" + System.currentTimeMillis() + ".txt";//select your path
         File file = new File(fileName);
         try (BufferedWriter line = new BufferedWriter(new FileWriter(file))) {
             for (Encarrec encarrec : encarrecs) {
@@ -33,7 +38,7 @@ public class Fitxer {
     }
 
     public static void createCSV(ArrayList<Encarrec> encarrecs) throws IOException{                                                                 //Method to create a file in CSV
-        String fileName = "C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06_UF1_A02\\" + "encarrecs" + System.currentTimeMillis() + ".csv";          //select your path
+        String fileName = "C:\\Users\\migue\\Desktop\\DAM2\\M06\\M06-UF1-A03\\" + "encarrecs" + System.currentTimeMillis() + ".csv";          //select your path
         File file = new File(fileName);
         try (BufferedWriter line = new BufferedWriter(new FileWriter(file))) {
             for (Encarrec encarrec : encarrecs) {
@@ -53,7 +58,7 @@ public class Fitxer {
     }
 
     public static void createBinari(ArrayList<Encarrec> encarrecs) throws IOException{     //Method to create a file in binary
-        String fileName = "C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06_UF1_A02\\" + "encarrecs" + System.currentTimeMillis() + ".dat";//select your path
+        String fileName = "C:\\Users\\migue\\Desktop\\DAM2\\M06\\M06-UF1-A03\\" + "encarrecs" + System.currentTimeMillis() + ".dat";//select your path
         File file = new File(fileName);
         try (FileOutputStream fileStr1 = new FileOutputStream(file)) {
             DataOutputStream line = new DataOutputStream(fileStr1);
@@ -79,6 +84,60 @@ public class Fitxer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void createDOM(ArrayList<Encarrec> encarrecs) throws IOException {
+        
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            DOMImplementation implementation = builder.getDOMImplementation();
+            Document document = implementation.createDocument (null,"encarrecs", null);
+            document.setXmlVersion("1.0");
+       
+            for ( Encarrec encarrec: encarrecs){
+        
+                Element arrel = document.createElement ("encarrec");
+                arrel.setAttribute("id",Integer.toString(encarrec.id));
+                document.getDocumentElement().appendChild(arrel);
+
+                CrearElement ("clientName",encarrec.name, arrel, document);
+                CrearElement ("clientPhone",encarrec.phone, arrel, document);
+                CrearElement ("orderdate", encarrec.data, arrel, document);
+                CrearElement ("totalPrice", encarrec.data, arrel, document);
+                CrearElement ("Heigth", Float.toString(encarrec.priceTotal),arrel, document);
+                Element articlesElement = document.createElement("Articles");
+                arrel.appendChild(articlesElement);
+
+                for (Article article : encarrec.articles) {
+                    Element articleElement = document.createElement("Article");
+                    articlesElement.appendChild(articleElement);
+
+                    CrearElement("Quantity", Float.toString(article.getQuantity()), articleElement, document);
+                    CrearElement("Unit", article.getUnit(), articleElement, document);
+                    CrearElement("Name", article.getName(), articleElement, document);
+                    CrearElement("Price", Float.toString(article.getPrice()), articleElement, document);
+                }
+            }
+        
+            Source source = new DOMSource (document);
+            Result result = new StreamResult (new FileWriter("encarrecs.xml"));
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes"); 
+            transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "5");
+            transformer.transform (source, result);
+        
+        } catch (Exception e ) { 
+            System.err.println ("Error: " + e);
+        }  
+    }
+
+        
+    public static void CrearElement (String infoEncarrec, String valor, Element arrel, Document document) {
+        Element elem = document.createElement (infoEncarrec);
+        Text text = document.createTextNode(valor);
+        arrel.appendChild (elem);
+        elem.appendChild (text);
     }
 
     public static void readBinari() {                                           
@@ -179,8 +238,9 @@ public class Fitxer {
             System.out.println("\nWhich document do you want?:\n" + 
                             "a) Albaran  [a] \n" + 
                             "b) Binary   [b]\n" +
-                            "c) CSV \t    [c] \n");
-            System.out.print("----> ");
+                            "c) CSV \t    [c] \n" +
+                            "d) XML \t    [x]");
+            System.out.print("\n----> ");
             String select = Entrada.readLine();
             if (select.equals("a")) {                           // to create a .txt file
                 createAlbaran(encarrecs);
@@ -197,7 +257,12 @@ public class Fitxer {
 
                 break;
             }
-            if(!select.equals("a") && !select.equals("b") && !select.equals("c")) {
+            if (select.equals("x")) {                           // to create a .csv file
+                Fitxer.createDOM(encarrecs);
+
+                break;
+            }
+            if(!select.equals("a") && !select.equals("b") && !select.equals("c") && !select.equals("x")) {
                 System.out.println("\n=======================");
                 System.out.println("Invalid option\nChoose a correct option");
                 System.out.println("======================="); 

@@ -38,9 +38,9 @@ public class Store {
                     }
                     id++;
                 }
-                System.out.println("\n\"Serializado\" file generated");
+                
                 Encarrec.Serializador();
-                System.out.println("\"Random file generated\"");
+                
                 Encarrec.fileRandom();
                 Fitxer.selectDocument(encarreclist);                                 // Select the document you want to create
                 encarreclist.clear();
