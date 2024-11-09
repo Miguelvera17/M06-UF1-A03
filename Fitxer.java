@@ -127,6 +127,8 @@ public class Fitxer {
             transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "5");
             transformer.transform (source, result);
         
+        } catch (IOException e) {
+            e.printStackTrace();
         } catch (Exception e ) { 
             System.err.println ("Error: " + e);
         }  
