@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<encarrecs>
+     <encarrec id="1">
+          <clientName>asfgsdf</clientName>
+          <clientPhone>asdfsdaf</clientPhone>
+          <orderdate>asdfasdf</orderdate>
+          <totalPrice>asdfasdf</totalPrice>
+          <Heigth>324237.0</Heigth>
+          <Articles>
+               <Article>
+                    <Quantity>3.0</Quantity>
+                    <Unit>asdfsdf</Unit>
+                    <Name>adsfsdf</Name>
+                    <Price>3.0</Price>
+               </Article>
+               <Article>
+                    <Quantity>324.0</Quantity>
+                    <Unit>sdfsdf</Unit>
+                    <Name>fsdfasdf</Name>
+                    <Price>324234.0</Price>
+               </Article>
+          </Articles>
+     </encarrec>
+     <encarrec id="2">
+          <clientName>adsfsdfsd</clientName>
+          <clientPhone>adsfsd</clientPhone>
+          <orderdate>fsadfsd</orderdate>
+          <totalPrice>fsadfsd</totalPrice>
+          <Heigth>5.0</Heigth>
+          <Articles>
+               <Article>
+                    <Quantity>5.0</Quantity>
+                    <Unit>dasfsdf</Unit>
+                    <Name>adsfsf</Name>
+                    <Price>5.0</Price>
+               </Article>
+          </Articles>
+     </encarrec>
+</encarrecs>
