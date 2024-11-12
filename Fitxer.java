@@ -87,7 +87,10 @@ public class Fitxer {
     }
 
     public static void createDOM(ArrayList<Encarrec> encarrecs) throws IOException {
-        
+        System.out.println("\nIndicate the name");
+        System.out.print("----> ");
+        String name = Entrada.readLine();
+        System.out.print("\n");
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -121,7 +124,7 @@ public class Fitxer {
             }
         
             Source source = new DOMSource (document);
-            Result result = new StreamResult (new FileWriter("encarrecs.xml"));
+            Result result = new StreamResult (new FileWriter(name + ".xml"));
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes"); 
             transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "5");
