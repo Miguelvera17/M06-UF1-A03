@@ -107,8 +107,7 @@ public class Fitxer {
                 CrearElement ("clientName",encarrec.name, arrel, document);
                 CrearElement ("clientPhone",encarrec.phone, arrel, document);
                 CrearElement ("orderdate", encarrec.data, arrel, document);
-                CrearElement ("totalPrice", encarrec.data, arrel, document);
-                CrearElement ("Heigth", Float.toString(encarrec.priceTotal),arrel, document);
+                CrearElement ("totalPrice", Float.toString(encarrec.priceTotal),arrel, document);
                 Element articlesElement = document.createElement("Articles");
                 arrel.appendChild(articlesElement);
 
