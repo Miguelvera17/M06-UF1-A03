@@ -97,7 +97,6 @@ public class Fitxer {
             DOMImplementation implementation = builder.getDOMImplementation();
             Document document = implementation.createDocument (null,"encarrecs", null);
             document.setXmlVersion("1.0");
-       
             for ( Encarrec encarrec: encarrecs){
         
                 Element arrel = document.createElement ("encarrec");
@@ -134,6 +133,48 @@ public class Fitxer {
         } catch (Exception e ) { 
             System.err.println ("Error: " + e);
         }  
+    }
+
+    public static void readXML(){
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        System.out.print("\nIndicate the path: ");                           // Ask for the path
+        String filePath = Entrada.readLine();
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(filePath);
+            Element arrel = document.getDocumentElement();
+
+            NodeList encarrecs = document.getElementsByTagName("encarrec");
+
+            for (int i = 0; i < encarrecs.getLength(); i++) {
+                Node encargo = encarrecs.item(i);
+
+                if (encargo.getNodeType() == Node.ELEMENT_NODE){
+
+                    Element element = (Element) encargo;
+                    System.out.println("ENCARGO N-" + element.getAttribute("id"));
+                    System.out.println("Id del encargo: " + element.getAttribute("id"));
+                    System.out.println("Nombre del cliente: " + element.getElementsByTagName("clientName").item(0).getTextContent());
+                    System.out.println("Teléfono del cliente: " + element.getElementsByTagName("clientPhone").item(0).getTextContent());
+                    System.out.println("Fecha del encargo: " + element.getElementsByTagName("orderdate").item(0).getTextContent());
+                    System.out.printf("%-15s %-15s %-15s %-15s%n", "Cantidad", "Unidades", "Artículo", "precio");
+                    System.out.printf("%-15s %-15s %-15s %-15s%n", "===============", "===============", "===============", "===============");
+                    NodeList articles = element.getElementsByTagName("Articles");
+                    for(int x = 0; x < articles.getLength(); x++){
+                        Node articulo = articles.item(x);
+                        if(articulo.getNodeType() == Node.ELEMENT_NODE){
+                            Element element2 = (Element) articulo;
+                            System.out.printf("%-15s %-15s %-15s %-15s%n", element2.getElementsByTagName("Quantity").item(0).getTextContent(),  element2.getElementsByTagName("Unit").item(0).getTextContent(),element2.getElementsByTagName("Name").item(0).getTextContent(), element2.getElementsByTagName("Price").item(0).getTextContent());
+                        }
+                    }
+                    System.out.printf("%-15s %-15s %-15s %-15s", "===============", "===============", "===============", "===============");
+                    System.out.println("\nPrecio total del encargo: " + element.getElementsByTagName("totalPrice").item(0).getTextContent()+ "€");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
         
@@ -237,6 +278,7 @@ public class Fitxer {
         }
     }
 
+
     public static void selectDocument(ArrayList<Encarrec> encarrecs) throws IOException{      // Method to create a document
         while (true) {
             System.out.println("\nWhich document do you want?:\n" + 
@@ -279,7 +321,8 @@ public class Fitxer {
                                     "a) Binary\t[b]\n" +
                                     "b) CSV \t\t[c] \n" +
                                     "c) Deserializar [d] \n" +
-                                    "d) Exit\t\t[x]");
+                                    "d) XML \t    [m] \n" +
+                                    "e) Exit\t\t[x]");
         System.out.print("\n----> ");
         String ans = Entrada.readLine();
                 
@@ -292,9 +335,12 @@ public class Fitxer {
         if (ans.equals("d")) {                                      // [d] deserailizar
             Encarrec.Deserializador();
         }
+        if   (ans.equals("m")){                                     //[m] to read a .xml file
+            Fitxer.readXML();
+        }
         if (ans.equals("x")) {                                      // [x] to exit
         }
-        if (!ans.equals("b") && !ans.equals("c") && !ans.equals("x") && !ans.equals("d")) {
+        if (!ans.equals("b") && !ans.equals("c") && !ans.equals("x") && !ans.equals("d") && !ans.equals("m")) {
             System.out.println("\n=======================");
             System.out.println("Invalid option\nChoose a correct option");
             System.out.println("=======================");
