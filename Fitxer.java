@@ -177,7 +177,6 @@ public class Fitxer {
         }
     }
 
-        
     public static void CrearElement (String infoEncarrec, String valor, Element arrel, Document document) {
         Element elem = document.createElement (infoEncarrec);
         Text text = document.createTextNode(valor);
