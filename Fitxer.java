@@ -142,7 +142,6 @@ public class Fitxer {
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(filePath);
-            Element arrel = document.getDocumentElement();
 
             NodeList encarrecs = document.getElementsByTagName("encarrec");
 
@@ -277,7 +276,6 @@ public class Fitxer {
             System.out.println("\nFAIL, incorrect document");           // Not correct extension
         }
     }
-
 
     public static void selectDocument(ArrayList<Encarrec> encarrecs) throws IOException{      // Method to create a document
         while (true) {
