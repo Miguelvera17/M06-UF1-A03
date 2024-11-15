@@ -156,6 +156,7 @@ public class Fitxer {
                     System.out.println("Nombre del cliente: " + element.getElementsByTagName("clientName").item(0).getTextContent());
                     System.out.println("Teléfono del cliente: " + element.getElementsByTagName("clientPhone").item(0).getTextContent());
                     System.out.println("Fecha del encargo: " + element.getElementsByTagName("orderdate").item(0).getTextContent());
+                    System.out.println("\nPrecio total del encargo: " + element.getElementsByTagName("totalPrice").item(0).getTextContent()+ "€");
                     System.out.printf("%-15s %-15s %-15s %-15s%n", "Cantidad", "Unidades", "Artículo", "precio");
                     System.out.printf("%-15s %-15s %-15s %-15s%n", "===============", "===============", "===============", "===============");
                     NodeList articles = element.getElementsByTagName("Articles");
@@ -167,7 +168,7 @@ public class Fitxer {
                         }
                     }
                     System.out.printf("%-15s %-15s %-15s %-15s", "===============", "===============", "===============", "===============");
-                    System.out.println("\nPrecio total del encargo: " + element.getElementsByTagName("totalPrice").item(0).getTextContent()+ "€");
+                    
                 }
             }
 
@@ -319,7 +320,7 @@ public class Fitxer {
                                     "a) Binary\t[b]\n" +
                                     "b) CSV \t\t[c] \n" +
                                     "c) Deserializar [d] \n" +
-                                    "d) XML \t    [m] \n" +
+                                    "d) XML \t\t[m] \n" +
                                     "e) Exit\t\t[x]");
         System.out.print("\n----> ");
         String ans = Entrada.readLine();
