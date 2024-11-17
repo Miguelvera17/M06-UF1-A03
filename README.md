@@ -2,7 +2,7 @@
 
 # XML Order Management System
 
-This application provides functionalities for managing and processing orders in XML format using DOM and SAX parsers. Below is a brief overview of the main functionalities and their implementations.
+This application provides functionalities for managing and processing "encarrecs" in XML format using DOM and SAX parsers. 
 
 ## Table of Contents
 
@@ -64,12 +64,14 @@ Processes an XML file using the SAX parser and filters orders by the client's na
 
 ### Key Steps
 
-Prompts the user for the XML file path and an optional client name filter.
-Sets up the GestioContingut handler for SAX parsing.
+1. Prompts the user for the XML file path and an optional client name filter.
+2. Sets up the GestioContingut handler for SAX parsing.
 
 Parses the XML file and:
-If a client name is specified, only orders matching the name are displayed.
-If no filter is specified, all orders are displayed.
+````
+a) If a client name is specified, only orders matching the name are displayed.
+b) If no filter is specified, all orders are displayed.
+````
 
 ## GestioContingut
 
