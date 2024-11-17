@@ -2,6 +2,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
 import org.w3c.dom.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
 import javax.xml.parsers.*;
 import javax.xml.transform.*; 
 import javax.xml.transform.dom.*;
@@ -10,7 +14,7 @@ import javax.xml.transform.stream.*;
 public class Fitxer {
     private static String a = "";
     public static void createAlbaran(ArrayList<Encarrec> encarrecs) throws IOException{    //Method to create a delivery note
-        String fileName = "C:\\Users\\migue\\Desktop\\DAM2\\M06\\M06-UF1-A03\\" + "encarrecs_" + System.currentTimeMillis() + ".txt";//select your path
+        String fileName = "C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06-UF1-A03\\" + "encarrecs_" + System.currentTimeMillis() + ".txt";//select your path
         File file = new File(fileName);
         try (BufferedWriter line = new BufferedWriter(new FileWriter(file))) {
             for (Encarrec encarrec : encarrecs) {
@@ -38,7 +42,7 @@ public class Fitxer {
     }
 
     public static void createCSV(ArrayList<Encarrec> encarrecs) throws IOException{                                                                 //Method to create a file in CSV
-        String fileName = "C:\\Users\\migue\\Desktop\\DAM2\\M06\\M06-UF1-A03\\" + "encarrecs" + System.currentTimeMillis() + ".csv";          //select your path
+        String fileName = "C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06-UF1-A03\\" + "encarrecs" + System.currentTimeMillis() + ".csv";          //select your path
         File file = new File(fileName);
         try (BufferedWriter line = new BufferedWriter(new FileWriter(file))) {
             for (Encarrec encarrec : encarrecs) {
@@ -58,7 +62,7 @@ public class Fitxer {
     }
 
     public static void createBinari(ArrayList<Encarrec> encarrecs) throws IOException{     //Method to create a file in binary
-        String fileName = "C:\\Users\\migue\\Desktop\\DAM2\\M06\\M06-UF1-A03\\" + "encarrecs" + System.currentTimeMillis() + ".dat";//select your path
+        String fileName = "C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06-UF1-A03\\" + "encarrecs" + System.currentTimeMillis() + ".dat";//select your path
         File file = new File(fileName);
         try (FileOutputStream fileStr1 = new FileOutputStream(file)) {
             DataOutputStream line = new DataOutputStream(fileStr1);
@@ -135,9 +139,17 @@ public class Fitxer {
         }  
     }
 
-    public static void readXML(){
+    public static void CrearElement (String infoEncarrec, String valor, Element arrel, Document document) {
+        Element elem = document.createElement (infoEncarrec);
+        Text text = document.createTextNode(valor);
+        arrel.appendChild (elem);
+        elem.appendChild (text);
+    }
+
+    public static void readXML() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        System.out.print("\nIndicate the path: ");                           // Ask for the path
+        System.out.println("\nIndicate the name of the file");                           // Ask for the path
+        System.out.print("\n----> ");
         String filePath = Entrada.readLine();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -151,13 +163,12 @@ public class Fitxer {
                 if (encargo.getNodeType() == Node.ELEMENT_NODE){
 
                     Element element = (Element) encargo;
-                    System.out.println("ENCARGO N-" + element.getAttribute("id"));
-                    System.out.println("Id del encargo: " + element.getAttribute("id"));
-                    System.out.println("Nombre del cliente: " + element.getElementsByTagName("clientName").item(0).getTextContent());
-                    System.out.println("Teléfono del cliente: " + element.getElementsByTagName("clientPhone").item(0).getTextContent());
-                    System.out.println("Fecha del encargo: " + element.getElementsByTagName("orderdate").item(0).getTextContent());
-                    System.out.println("\nPrecio total del encargo: " + element.getElementsByTagName("totalPrice").item(0).getTextContent()+ "€");
-                    System.out.printf("%-15s %-15s %-15s %-15s%n", "Cantidad", "Unidades", "Artículo", "precio");
+                    System.out.println("\nEncarrec id: " + element.getAttribute("id"));
+                    System.out.println("Client's name: " + element.getElementsByTagName("clientName").item(0).getTextContent());
+                    System.out.println("Client's phone: " + element.getElementsByTagName("clientPhone").item(0).getTextContent());
+                    System.out.println("Date's order: " + element.getElementsByTagName("orderdate").item(0).getTextContent());
+                    System.out.println("Total price: " + element.getElementsByTagName("totalPrice").item(0).getTextContent()+ "\n");
+                    System.out.printf("%-15s %-15s %-15s %-15s%n", "Quantity", "Unit", "Article", "Price");
                     System.out.printf("%-15s %-15s %-15s %-15s%n", "===============", "===============", "===============", "===============");
                     NodeList articles = element.getElementsByTagName("Articles");
                     for(int x = 0; x < articles.getLength(); x++){
@@ -168,20 +179,46 @@ public class Fitxer {
                         }
                     }
                     System.out.printf("%-15s %-15s %-15s %-15s", "===============", "===============", "===============", "===============");
-                    
+                    System.out.println();
                 }
             }
 
+        } catch (FileNotFoundException e){
+            System.out.println("\nError: File not found");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void CrearElement (String infoEncarrec, String valor, Element arrel, Document document) {
-        Element elem = document.createElement (infoEncarrec);
-        Text text = document.createTextNode(valor);
-        arrel.appendChild (elem);
-        elem.appendChild (text);
+    public static void readSAX() throws FileNotFoundException, IOException, SAXException, ParserConfigurationException{
+        System.out.print("\nIndicate the path: ");
+        String filePath = Entrada.readLine();
+
+        System.out.print("\nDo you want to filter by client's name? (Press Enter to skip or type the name): ");
+        String clientFilter = Entrada.readLine();
+
+        try {
+            SAXParserFactory saxpf = SAXParserFactory.newInstance();
+            SAXParser parser = saxpf.newSAXParser();
+            XMLReader procesadorXML = parser.getXMLReader();
+
+            GestioContingut gestor = new GestioContingut(clientFilter);
+            procesadorXML.setContentHandler(gestor);
+            InputSource fileXML = new InputSource (filePath);
+            procesadorXML.parse(fileXML);
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Archivo no encontrado: " + filePath);
+        } catch (IOException e) {
+            System.out.println("Error de entrada/salida al procesar el archivo.");
+            e.printStackTrace();
+        } catch (SAXException e) {
+            System.out.println("Error de procesamiento SAX.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static void readBinari() {                                           
@@ -314,13 +351,14 @@ public class Fitxer {
         }
     }
 
-    public static void selectReadDocument() throws IOException {            // Method to choose which document you want to read
+    public static void selectReadDocument() throws IOException, FileNotFoundException, IOException, SAXException, ParserConfigurationException {            // Method to choose which document you want to read
         System.out.println("\nWhich document do you want read?:\n" +  
                                     "a) Binary\t[b]\n" +
                                     "b) CSV \t\t[c] \n" +
                                     "c) Deserializar [d] \n" +
                                     "d) XML \t\t[m] \n" +
-                                    "e) Exit\t\t[x]");
+                                    "e) SAX \t\t[s] \n" +
+                                    "f) Exit\t\t[x]");
         System.out.print("\n----> ");
         String ans = Entrada.readLine();
                 
@@ -336,9 +374,12 @@ public class Fitxer {
         if   (ans.equals("m")){                                     //[m] to read a .xml file
             Fitxer.readXML();
         }
+        if   (ans.equals("s")){                                     //[m] to read SAX
+            Fitxer.readSAX();
+        }
         if (ans.equals("x")) {                                      // [x] to exit
         }
-        if (!ans.equals("b") && !ans.equals("c") && !ans.equals("x") && !ans.equals("d") && !ans.equals("m")) {
+        if (!ans.equals("b") && !ans.equals("c") && !ans.equals("x") && !ans.equals("d") && !ans.equals("m") && !ans.equals("s")) {
             System.out.println("\n=======================");
             System.out.println("Invalid option\nChoose a correct option");
             System.out.println("=======================");

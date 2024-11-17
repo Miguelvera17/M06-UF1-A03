@@ -1,6 +1,10 @@
 import java.io.*;
 import java.util.ArrayList;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 public class Store {
     
     public static Article article;  // declare an article
@@ -8,7 +12,7 @@ public class Store {
     public static ArrayList<Encarrec> encarreclist = new ArrayList<>();
     public static Encarrec Enc;
     
-    public static void main (String[] args) throws IOException {
+    public static void main (String[] args) throws IOException, FileNotFoundException, IOException, SAXException, ParserConfigurationException {
         System.out.print("Welcome to my store!!\n" +
                             "=====================\n" + 
                             "\n" +

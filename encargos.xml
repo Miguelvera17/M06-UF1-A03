@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<encarrecs>
+     <encarrec id="1">
+          <clientName>Miguel</clientName>
+          <clientPhone>565656565</clientPhone>
+          <orderdate>20/20/20</orderdate>
+          <totalPrice>4.0</totalPrice>
+          <Articles>
+               <Article>
+                    <Quantity>2.0</Quantity>
+                    <Unit>und</Unit>
+                    <Name>manzana</Name>
+                    <Price>3.0</Price>
+               </Article>
+               <Article>
+                    <Quantity>3.0</Quantity>
+                    <Unit>kg</Unit>
+                    <Name>papa</Name>
+                    <Price>1.0</Price>
+               </Article>
+          </Articles>
+     </encarrec>
+     <encarrec id="2">
+          <clientName>Angel</clientName>
+          <clientPhone>98989898998</clientPhone>
+          <orderdate>1/1/1</orderdate>
+          <totalPrice>6.0</totalPrice>
+          <Articles>
+               <Article>
+                    <Quantity>3.0</Quantity>
+                    <Unit>kg</Unit>
+                    <Name>arroz</Name>
+                    <Price>3.0</Price>
+               </Article>
+               <Article>
+                    <Quantity>3.0</Quantity>
+                    <Unit>manos</Unit>
+                    <Name>platano</Name>
+                    <Price>3.0</Price>
+               </Article>
+          </Articles>
+     </encarrec>
+</encarrecs>

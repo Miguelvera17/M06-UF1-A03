@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.List;
 import java.io.Serializable;
 
 
@@ -20,7 +21,9 @@ public class Encarrec implements Serializable {
     ArrayList<Article> articles;
     public static ArrayList<Encarrec> encarrecs = new ArrayList<>();
 
-    public Encarrec() {}
+    public Encarrec() {
+        this.articles = new ArrayList<>();
+    }
 
     public Encarrec(int id, String name, String phone, String data, ArrayList<Article> articles,float priceTotal ) {
         this.id = id;
@@ -29,6 +32,30 @@ public class Encarrec implements Serializable {
         this.data = data;
         this.articles = articles;
         this.priceTotal = priceTotal;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public void setPriceTotal(float priceTotal) {
+        this.priceTotal = priceTotal;
+    }
+
+    public void addArticle(Article article) {
+        this.articles.add(article);
     }
 
     public static ArrayList<Encarrec> createEncargo(int id, ArrayList<Article> articles, Client client, float priceTotal) {
@@ -59,7 +86,7 @@ public class Encarrec implements Serializable {
 
     public static void Serializador() {
 		
-	try (ObjectOutputStream serializador = new ObjectOutputStream(new FileOutputStream("C:\\Users\\migue\\Desktop\\DAM2\\M06\\M06-UF1-A03\\" + "Serial_" + System.currentTimeMillis() + ".dat"))) {
+	try (ObjectOutputStream serializador = new ObjectOutputStream(new FileOutputStream("C:\\Users\\migue\\Documents\\MediaTIC\\M06\\M06-UF1-A03\\" + "Serial_" + System.currentTimeMillis() + ".dat"))) {
         serializador.writeObject(encarrecs);
         System.out.println("\n\"Serializado\" file generated");
     } catch (IOException ioe) { 
