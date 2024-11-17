@@ -42,6 +42,38 @@ Utility method to create and append an XML element to the document.
 - `arrel`: The parent element to which this element will be appended.
 - `document`: The XML document object.
 
-### Example
-```java
-CrearElement("clientName", encarrec.name, arrel, document);
+
+## readXML
+Description
+Parses an XML file using the DOM parser and prints the details of all orders and their associated articles.
+
+Key Steps
+Prompts the user to provide the path to the XML file.
+Uses DocumentBuilder to parse the file and load it into a DOM structure.
+Extracts and prints:
+Order attributes like id, clientName, clientPhone, etc.
+Article details such as quantity, unit, name, and price.
+Output
+Displays the contents of the XML file in a formatted table.
+
+
+## readSAX
+Description
+Processes an XML file using the SAX parser and filters orders by the client's name if specified.
+
+Key Steps
+Prompts the user for the XML file path and an optional client name filter.
+Sets up the GestioContingut handler for SAX parsing.
+Parses the XML file and:
+If a client name is specified, only orders matching the name are displayed.
+If no filter is specified, all orders are displayed.
+Output
+Prints the matching orders or the entire document if no match is found.
+GestioContingut
+Description
+Custom SAX handler class for processing order data.
+
+Key Features
+Starts and ends the document and elements.
+Processes and stores content for each order and article.
+Applies the client filter logic, ensuring only relevant data is displayed.
